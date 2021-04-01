@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useHistory } from "react-router"
 import FirebaseContext from '../context/firebase';
 
@@ -14,6 +14,10 @@ export default function Login() {
     const isInvalid = password === '' || emailAddress === '';
 
     const handleLogin = () => {};
+
+    useEffect(() => {
+        document.title = 'Login - Instagram'
+    }, []);
 
     return <p>I am login page</p>
 }
