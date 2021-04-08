@@ -3,8 +3,9 @@ import { useHistory } from "react-router"
 import { Link } from 'react-router-dom';
 import FirebaseContext from '../context/firebase';
 import * as ROUTES from '../constants/routes';
+import { doesUsernameExist } from '../services/firebase';
 
-export default function Login() {
+export default function SignUp() {
 
     const history = useHistory();
     const { firebase } = useContext(FirebaseContext)
@@ -21,14 +22,38 @@ export default function Login() {
     const handleSignUp = async (e) => {
         e.preventDefault();
 
-        // try {
-        //     // await firebase.auth().signInWithEmailAndPassword(emailAddress, password);
-        //     // history.push(ROUTES.DASHBOARD);
-        // } catch (error) {
-        //     // setEmailAddress('');
-        //     // setPassword('');
-        //     // setError(error.message);
-        // }
+        const usernameExists = await doesUsernameExist(username);
+
+        if (usernameExists.length) {
+            try {
+                const createdUserResult = await firebase
+                .auth()
+                .createUserWithEmailAndPassword(emailAddress, password);
+                
+                //authentication
+                // -> emailAddress & password & username (displayName)
+                await createdUserResult.user.updateProfile({
+                    displayName: username
+                });
+
+                // firebase user collections (create a document)
+                await firebase.firestore().collection('user').add({
+                    userId: createdUserResult.user.uid,
+                    username: username.toLowerCase(),
+                    fullName,
+                    emailAddress: emailAddress.toLowerCase(),
+                    following: [],
+                    dateCreated: Date.now()
+                })
+
+                history.push(ROUTES.DASHBOARD);
+            }catch(error) {
+                setFullName('');
+                setEmailAddress('');
+                setPassword('');
+                setError(error.message);
+            }
+        }
     };
 
     useEffect(() => {
@@ -51,13 +76,29 @@ export default function Login() {
                     {error && <p className="mb-4 text-xs text-red-primary" >{error}</p>}
 
                     <form onSubmit={handleSignUp} method="post">
-                        
+                        <input 
+                            aria-label="Enter Your Full Name"
+                            type="text"
+                            placeholder="Full Name"
+                            className="text-sm text-gray-base w-full mr-3 py-3 px-4 h-2 border border-gray-primary rounded mb-2"
+                            onChange={({ target }) => setFullName(target.value)}
+                            value={fullName}
+                        />
+                        <input 
+                            aria-label="Enter Your Username"
+                            type="text"
+                            placeholder="Username"
+                            className="text-sm text-gray-base w-full mr-3 py-3 px-4 h-2 border border-gray-primary rounded mb-2"
+                            onChange={({ target }) => setUsername(target.value)}
+                            value={username}
+                        />
                         <input 
                             aria-label="Enter Your Email"
                             type="text"
                             placeholder="Email Address"
                             className="text-sm text-gray-base w-full mr-3 py-3 px-4 h-2 border border-gray-primary rounded mb-2"
                             onChange={({ target }) => setEmailAddress(target.value)}
+                            value={emailAddress}
                         />
                         <input 
                             aria-label="Enter Your Password"
@@ -65,6 +106,7 @@ export default function Login() {
                             placeholder="Password"
                             className="text-sm text-gray-base w-full mr-3 py-3 px-4 h-2 border border-gray-primary rounded mb-2"
                             onChange={({ target }) => setPassword(target.value)}
+                            value={password}
                         />
                         <button disabled={isInvalid} type="submit" 
                         className={
@@ -77,9 +119,9 @@ export default function Login() {
                 </div>
 
                 <div className="flex justify-center items-center flex-col w-full bg-white p-4 border rounded border-gray-primary">
-                    <p className="text-sm">Don't have an account?{` `}
-                        <Link to="/signup" className="font-bold text-blue-medium">
-                            Sign Up
+                    <p className="text-sm">Already signed up{` `}
+                        <Link to={ROUTES.LOGIN} className="font-bold text-blue-medium">
+                            Login
                         </Link>
                     </p>
                 </div>
