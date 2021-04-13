@@ -1,4 +1,7 @@
 import { useEffect } from 'react';
+import Header from '../components/header';
+import Sidebar from '../components/sidebar';
+import Timeline from '../components/timeline';
 
 export default function Dashboard() {
     useEffect(() => {
@@ -6,7 +9,7 @@ export default function Dashboard() {
     }, [])
 
     return (
-        
+
         <div className="bg-gray-background">
             <Header></Header>
 
