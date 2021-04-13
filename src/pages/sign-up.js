@@ -24,7 +24,7 @@ export default function SignUp() {
 
         const usernameExists = await doesUsernameExist(username);
 
-        if (usernameExists.length) {
+        if (!usernameExists.length) {
             try {
                 const createdUserResult = await firebase
                 .auth()
@@ -37,7 +37,7 @@ export default function SignUp() {
                 });
 
                 // firebase user collections (create a document)
-                await firebase.firestore().collection('user').add({
+                await firebase.firestore().collection('users').add({
                     userId: createdUserResult.user.uid,
                     username: username.toLowerCase(),
                     fullName,
@@ -53,6 +53,9 @@ export default function SignUp() {
                 setPassword('');
                 setError(error.message);
             }
+        } else {
+            setUsername('');
+            setError('That username is already taken, please try another.');
         }
     };
 
