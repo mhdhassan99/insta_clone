@@ -1,8 +1,7 @@
 export function seedDatabase(firebase) {
-
   const users = [
     {
-      userId: 'MMuTiK2Ym7V1Z7qIaDzeHBhMkxj2',
+      userId: '3FkXA6kqwebX7fn0zG8nh2OIZTv2',
       username: 'hassan',
       fullName: 'Mhd Hassan',
       emailAddress: 'mhassan.work99@gmail.com',
@@ -10,24 +9,22 @@ export function seedDatabase(firebase) {
       followers: ['2', '3', '4'],
       dateCreated: Date.now()
     },
-
     {
       userId: '2',
       username: 'raphael',
       fullName: 'Raffaello Sanzio da Urbino',
       emailAddress: 'raphael@sanzio.com',
       following: [],
-      followers: ['MMuTiK2Ym7V1Z7qIaDzeHBhMkxj2'],
+      followers: ['3FkXA6kqwebX7fn0zG8nh2OIZTv2'],
       dateCreated: Date.now()
     },
-
     {
       userId: '3',
       username: 'dali',
       fullName: 'Salvador Dalí',
       emailAddress: 'salvador@dali.com',
       following: [],
-      followers: ['MMuTiK2Ym7V1Z7qIaDzeHBhMkxj2'],
+      followers: ['3FkXA6kqwebX7fn0zG8nh2OIZTv2'],
       dateCreated: Date.now()
     },
     {
@@ -36,11 +33,12 @@ export function seedDatabase(firebase) {
       fullName: 'George Orwell',
       emailAddress: 'george@orwell.com',
       following: [],
-      followers: ['MMuTiK2Ym7V1Z7qIaDzeHBhMkxj2'],
+      followers: ['3FkXA6kqwebX7fn0zG8nh2OIZTv2'],
       dateCreated: Date.now()
     }
   ];
 
+  // eslint-disable-next-line prefer-const
   for (let k = 0; k < users.length; k++) {
     firebase.firestore().collection('users').add(users[k]);
   }
@@ -56,7 +54,6 @@ export function seedDatabase(firebase) {
         imageSrc: `/images/users/raphael/${i}.jpg`,
         caption: 'Saint George and the Dragon',
         likes: [],
-
         comments: [
           {
             displayName: 'dali',
@@ -67,11 +64,9 @@ export function seedDatabase(firebase) {
             comment: 'Would you mind if I used this picture?'
           }
         ],
-
         userLatitude: '40.7128°',
         userLongitude: '74.0060°',
         dateCreated: Date.now()
       });
-
   }
 }
