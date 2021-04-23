@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react'; 
 import PropTypes from 'prop-types';
 import Skeleton from 'react-loading-skeleton';
+import { getSuggestedProfiles } from '../../services/firebase';
 
-export default function Suggestions({ userId }) {
+export default function Suggestions({ userId, following }) {
 
     const [profiles, setProfiles] = useState(null);
 
     useEffect(() => {
-        
+        async function suggestedProfiles() {
+            const response = await getSuggestedProfiles(userId, following);
+            setProfiles(response);
+        }
+
+        if (userId) {
+            suggestedProfiles();
+        }
+
+        console.log('profiles', profiles)
     }, [userId]);
 
     return !profiles ? (
@@ -26,5 +36,6 @@ export default function Suggestions({ userId }) {
 
 
 Suggestions.propTypes = {
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string,
+    following: PropTypes.array
 }
