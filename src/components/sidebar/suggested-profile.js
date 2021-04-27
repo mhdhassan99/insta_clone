@@ -1,9 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { updateLoggedInUserFollowing, updateFollowedUserFollowers } from '../../services/firebase';
 
-export default function SuggestedProfile({ userDocId, username, profileId, userId }) {
+export default function SuggestedProfile({ spDocId, username, profileId, userId, loggedInUserDocId }) {
 
     const [followed, setFollowed] = useState(false);
+
+    async function handleFollowUser() {
+        setFollowed(true);
+
+        // firebase need to create 2 functions 
+        // update the following array of the logged in user (my profile)
+        await updateLoggedInUserFollowing(loggedInUserDocId, profileId)
+
+        // update the followers array of the user who has bin followed 
+        await updateFollowedUserFollowers(spDocId, userId)
+    }
 
     return !followed ? (
 
@@ -14,7 +27,18 @@ export default function SuggestedProfile({ userDocId, username, profileId, userI
                     src={`/images/avatars/${username}.jpeg`}
                     alt=""
                 />
+                <Link to={`/p/${username}`}>
+                    <p className="font-bold text-sm">{username}</p>
+                </Link>
             </div>
+
+            <button 
+                className="text-sm font-bold text-blue-medium"
+                type="button"
+                onClick={handleFollowUser}
+            >
+            Follow
+            </button>
         </div>
 
     ): null;
@@ -22,8 +46,9 @@ export default function SuggestedProfile({ userDocId, username, profileId, userI
 } 
 
 SuggestedProfile.propTypes = {
-    userDocId: PropTypes.string.isRequired,
+    spDocId: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     profileId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired,
+    loggedInUserDocId: PropTypes.string.isRequired
 }
