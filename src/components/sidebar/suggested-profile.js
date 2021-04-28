@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { updateLoggedInUserFollowing, updateFollowedUserFollowers } from '../../services/firebase';
 
-export default function SuggestedProfile({ spDocId, username, profileId, userId, loggedInUserDocId }) {
+export default function SuggestedProfile({ profileDocId, username, profileId, userId, loggedInUserDocId }) {
 
     const [followed, setFollowed] = useState(false);
 
@@ -12,10 +12,10 @@ export default function SuggestedProfile({ spDocId, username, profileId, userId,
 
         // firebase need to create 2 functions 
         // update the following array of the logged in user (my profile)
-        await updateLoggedInUserFollowing(loggedInUserDocId, profileId)
+        await updateLoggedInUserFollowing(loggedInUserDocId, profileId, false)
 
         // update the followers array of the user who has bin followed 
-        await updateFollowedUserFollowers(spDocId, userId)
+        await updateFollowedUserFollowers(profileDocId, userId, false)
     }
 
     return !followed ? (
@@ -46,7 +46,7 @@ export default function SuggestedProfile({ spDocId, username, profileId, userId,
 } 
 
 SuggestedProfile.propTypes = {
-    spDocId: PropTypes.string.isRequired,
+    profileDocId: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     profileId: PropTypes.string.isRequired,
     userId: PropTypes.string.isRequired,

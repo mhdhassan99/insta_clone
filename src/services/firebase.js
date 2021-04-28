@@ -39,3 +39,35 @@ export async function getSuggestedProfiles(userId, following) {
 };
 
 // updateLoggedInUserFollowing, updateFollowedUserFollowers
+
+export async function updateLoggedInUserFollowing(
+    loggedInUserDocId, // currently logged in user
+    profileId, // the user that current user request to follow
+    isFollowingProfile // true/false (is the current user is following the user or not)
+    ) {
+    return firebase
+        .firestore()
+        .collection('users')
+        .docId(loggedInUserDocId)
+        .update({
+            following: isFollowingProfile
+                ? FieldValue.arrayRemove(profileId)
+                : FieldValue.arrayUnion(profileId)
+        });
+}
+
+export async function updateFollowedUserFollowers(
+    profileDocId, // currently logged in user
+    loggedInUserDocId, // the user that current user request to follow
+    isFollowingProfile // true/false (is the current user is following the user or not)
+    ) {
+    return firebase
+        .firestore()
+        .collection('users')
+        .docId(profileDocId)
+        .update({
+            following: isFollowingProfile
+                ? FieldValue.arrayRemove(loggedInUserDocId)
+                : FieldValue.arrayUnion(loggedInUserDocId)
+        });
+}
