@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import UserContext from '../context/user';
+import { getPhotos, getUserByUserId } from '../services/firebase';
 
 export default function usePhotos() {
 
@@ -12,11 +13,17 @@ export default function usePhotos() {
     useEffect(() => {
         async function getTimeLinePhotos() {
 
+            const {following} = await getUserByUserId(userId)
+            let followedUserPhotos = []
+
+            if (following.length > 0) {
+                followedUserPhotos = await getPhotos(userId, following)
+            }
         }
 
-        if (userId) {
-            getTimeLinePhotos()
-        }
+        // if (userId) {
+        //     getTimeLinePhotos()
+        // }
     }, []);
 
     return { photos };
