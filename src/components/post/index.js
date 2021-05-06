@@ -5,6 +5,10 @@ import Image from './image';
 import Actions from './actions';
 
 export default function Post({ content }) {
+
+    const commentInput = useRef(null);
+    const handleFocus = () => commentInput.current.focus();
+    
     //components 
     // header, image, action(like and comment icons), footer, comments
 
@@ -18,6 +22,7 @@ export default function Post({ content }) {
                 docId={content.docId}
                 totalLikes={content.likes.length}
                 LikedPhoto={content.userLikedPhoto}
+                handleFocus={handleFocus}
             />
         </div>
     )
